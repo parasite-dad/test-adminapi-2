@@ -116,7 +116,7 @@ export default function Index() {
   const navigate = useNavigate();
   return (
     <Page>
-      <ui-title-bar title="Remix app template">
+      <ui-title-bar title="Remix app template1">
         <button
           variant="primary"
           onClick={() => {
