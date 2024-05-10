@@ -1,0 +1,325 @@
+import { useEffect } from "react";
+import { json, createRequestHandler } from "@remix-run/node";
+import {
+  useActionData,
+  useNavigation,
+  useSubmit,
+  Link,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
+import {
+  Page,
+  Layout,
+  Text,
+  Card,
+  Grid,
+  Pagination,
+  Button,
+  BlockStack,
+  Box,
+  List,
+  InlineStack,
+} from "@shopify/polaris";
+import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
+import { authenticate } from "../shopify.server";
+// import axios from "axios";
+// import fs from "fs";
+// import path from "path";
+const NUM_OF_PRODUCT_DISPLAYED = 6;
+
+// async function downloadImage(url, savePath) {
+//   const response = await axios({
+//     url,
+//     method: "GET",
+//     responseType: "stream",
+//   });
+//   //const filename = path.basename(url);
+//   //console.log(filename);
+//   //const filename = "test.jpg";
+//   //const saveFilePath = path.join(savePath, filename);
+//   //const writer = fs.createWriteStream(saveFilePath);
+
+//   //response.data.pipe(writer);
+
+//   response.data.pipe(fs.createWriteStream("./test.webp"));
+//   // return new Promise((resolve, reject) => {
+//   //   writer.on("finish", resolve);
+//   //   writer.on("error", reject);
+//   // });
+// }
+const currentcursor =
+  "eyJsYXN0X2lkIjo5MTY0Nzk1NDc4MzI2LCJsYXN0X3ZhbHVlIjoiOTE2NDc5NTQ3ODMyNiJ9";
+export async function loader({ request }) {
+  const { admin, session } = await authenticate.admin(request);
+  const { productList, nextpageInfo } = await pageContent(
+    currentcursor,
+    admin.graphql,
+  );
+  // //console.log(productList);
+  // console.log(nextpageInfo);
+  // // const response1 = await admin.rest.resources.Product.count({
+  // //   session: session,
+  // // });
+  // //const productCount = response1;
+  // //   const response2 = await admin.rest.resources.Product.all({
+  // //     session: session,
+  // //   });
+  const response = await admin.graphql(
+    `query{
+      productsCount
+       {
+        count
+      }
+    }`,
+  );
+
+  const { data } = await response.json();
+  //console.log(data.productsCount.count);
+  const productsCount = data.productsCount.count;
+  //   const titlelist = data.data[1].title;
+
+  //   const productres = await admin.graphql(
+  //     `
+  //     query ($c: Int!){
+  // products(first: $c){
+  //     edges{
+  //       node{
+  //         id
+  //         title
+  //       }
+  //     }
+  //         pageInfo {
+  //         hasPreviousPage
+  //         hasNextPage
+  //         startCursor
+  //         endCursor
+  //       }
+  // }
+  //     }`,
+  //     {
+  //       variables: {
+  //         c: productsCount,
+  //       },
+  //     },
+  //   );
+  //   const productdata = await productres.json();
+  //   console.log(productdata);
+  //   console.log(productsCount);
+  // const mat = await admin.rest.resources.Product.find({
+  //   session: session,
+  //   id: 9164803965238,
+  // });
+  //console.log(mat);
+  //const response3 = await response.json();
+  // console.log("****************************************");
+  // console.log(JSON.stringify(productCount, null, 2));
+  // console.log("****************************************");
+  // console.log(response2.data[1].title);
+  //return json({ product : productCount });
+  // const count = JSON.stringify(productCount, null, 2);
+  // console.log(typeof productCount.count);
+  // console.log(response3.data.shop.name);
+
+  // const titlelist = response2.data[1].title;
+
+  //   const productList = response2.data.map((product) => {
+  //     return {
+  //       id: product.id,
+  //       title: product.title,
+  //       handle: product.handle,
+  //       createdAt: product.createdAt,
+  //       // image: () => {
+  //       //   return product.images[0].src;
+  //       // },
+  //       image: product.image,
+  //     };
+  //   });
+
+  // Example usage
+  // const imageUrl = productList[0].image.src;
+  // const saveDirectory = "./";
+
+  // downloadImage(imageUrl, saveDirectory)
+  //   .then(() => {
+  //     console.log(`Image downloaded and saved to:`);
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error downloading image:", error);
+  //   });
+
+  // console.log(productList[0].image);
+  // console.log(productList[0].image.src);
+  // console.log(productList[1]);
+  // console.log(productList[1].id);
+  // console.log(productList[1].image.src);
+
+  return {
+    count1: productsCount,
+    // title1: titlelist,
+    products: productList,
+    //name: response3.data.shop.name,
+  };
+  //   return null;
+}
+
+export default function Index() {
+  const nav = useNavigation();
+  const actionData = useActionData();
+  const loaderData = useLoaderData();
+  // const submit = useSubmit();
+  //const shopify = useAppBridge();
+  const isLoading =
+    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
+
+  const productId = actionData?.product?.id.replace(
+    "gid://shopify/Product/",
+    "",
+  );
+  const navigate = useNavigate();
+  return (
+    <Page>
+      <Grid>
+        <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 12, xl: 6 }}>
+          <Card>
+            {/* <Button size="large" url="/app/products">
+              Products
+            </Button> */}
+            <Link to={`/app/products`}>products</Link>
+          </Card>
+        </Grid.Cell>
+      </Grid>
+
+      <Layout>
+        {loaderData.products.map((product, index) => (
+          <Layout.Section variant="oneThird" key={product.id}>
+            <Grid>
+              <Grid.Cell columnSpan={{ xs: 6, sm: 6, md: 6, lg: 12, xl: 6 }}>
+                <Card>
+                  <Text as="h3" variant="headingMd">
+                    {product?.id && product.id}
+                  </Text>
+                  <Text as="h3" variant="headingMd">
+                    {product?.title && product.title}
+                  </Text>
+
+                  <img
+                    alt=""
+                    width="50%"
+                    height="50%"
+                    src={product?.image && product.image}
+                  />
+                </Card>
+              </Grid.Cell>
+            </Grid>
+          </Layout.Section>
+        ))}
+      </Layout>
+      <div
+        style={{
+          maxWidth: "700px",
+          margin: "auto",
+          border: "1px solid var(--p-color-border)",
+        }}
+      >
+        <Pagination
+          onPrevious={() => {
+            console.log("Previous");
+            navigate("/app/products/2", { relative: "path" });
+          }}
+          onNext={() => {
+            console.log("Next1");
+            navigate("/app/products", { relative: "path" });
+            console.log("Next2");
+          }}
+          nextURL="/app/products"
+          type="table"
+          hasNext
+          label="1-50 of 8,450 orders"
+        />
+      </div>
+    </Page>
+  );
+}
+
+function nextpageCursor(pageInfo, nextPage, graphql) {
+  const cursorPos = getCursors(pageInfo);
+  if (pageInfo.hasNextPage == true && cursorPos[1] != null) {
+    return nextPage(cursorPos[1], graphql);
+  }
+}
+
+async function pageContent(cursor, graphql) {
+  const pageQuery = `query ($numProducts: Int!, $cursorpos: String){ 
+products(first: $numProducts, after: $cursorpos){
+edges{
+  node{
+    id
+    title
+    handle
+    createdAt
+    images (first: 1){
+      edges {
+        node {
+          id
+          url
+        }
+      }
+    }
+  }
+}
+    pageInfo {
+    hasPreviousPage
+    hasNextPage
+    startCursor
+    endCursor
+  }
+}
+}`;
+  const pageQueryVariables = {
+    variables: {
+      numProducts: NUM_OF_PRODUCT_DISPLAYED,
+      cursorpos: cursor,
+    },
+  };
+
+  const response = await graphql(pageQuery, pageQueryVariables);
+  //console.log(response);
+  const data = await response.json();
+  const productList = data.data.products.edges.map((product) => {
+    return {
+      id: product.node.id,
+      title: product.node.title,
+      handle: product.node.handle,
+      createdAt: product.node.createdAt,
+      image: product.node.images.edges[0].node.url,
+    };
+  });
+  //const cursorsPos = getCursors(data1);
+  const nextpageInfo = data.data.products.pageInfo;
+  //console.log(nextpageInfo);
+  return { productList, nextpageInfo };
+}
+
+export function getCursors(json) {
+  let startCursor;
+  let endCursor;
+
+  function search(obj) {
+    if (typeof obj !== "object") return;
+
+    Object.keys(obj).forEach((key) => {
+      if (key === "startCursor") {
+        startCursor = obj[key];
+      } else if (key === "endCursor") {
+        endCursor = obj[key];
+      } else {
+        search(obj[key]);
+      }
+    });
+  }
+
+  search(json);
+
+  return [startCursor, endCursor];
+}

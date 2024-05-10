@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "3a783acd5035c155c20928a73039ca61"
+name = "test-adminapi-2"
+handle = "test-adminapi-2"
+application_url = "https://jason-corn-med-accomplish.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "fitunions-test1.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_products"
+
+[auth]
+redirect_urls = [
+  "https://jason-corn-med-accomplish.trycloudflare.com/auth/callback",
+  "https://jason-corn-med-accomplish.trycloudflare.com/auth/shopify/callback",
+  "https://jason-corn-med-accomplish.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
