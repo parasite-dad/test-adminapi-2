@@ -125,7 +125,7 @@ export default function Index() {
             console.log("title2");
           }}
         >
-          product link
+          product link 11
         </button>
       </ui-title-bar>
       <BlockStack gap="500">
