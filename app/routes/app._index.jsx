@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { json } from "@remix-run/node";
 import {
+  Outlet,
   useActionData,
   useNavigation,
   useSubmit,
   useNavigate,
+  useLoaderData,
 } from "@remix-run/react";
 import {
   Page,
@@ -22,12 +24,22 @@ import {
 import { authenticate } from "../shopify.server";
 
 export const loader = async ({ request }) => {
-  await authenticate.admin(request);
-  console.log("app index");
-  console.log(request);
+  const { admin } = await authenticate.admin(request);
+  //const shop = await shopDetail(admin.graphql);
+  //console.log(shop);
+  //console.log(request);
   return null;
 };
-
+async function shopDetail(graphql) {
+  const shopDetailQuery = `query {	shop {
+		name
+	}
+}`;
+  const response = await graphql(shopDetailQuery);
+  const data = await response.json();
+  console.log(data);
+  return data.data.shop.name;
+}
 export const action = async ({ request }) => {
   const { admin } = await authenticate.admin(request);
   console.log("action");
@@ -106,7 +118,7 @@ export default function Index() {
     "gid://shopify/Product/",
     "",
   );
-
+  const shop = useLoaderData();
   useEffect(() => {
     if (productId) {
       shopify.toast.show("Product created");
@@ -127,8 +139,15 @@ export default function Index() {
         >
           product link 1234
         </button>
+        <button
+          onClick={() => {
+            navigate("/app/collections1");
+          }}
+        >
+          product error link
+        </button>
       </ui-title-bar>
-      <BlockStack gap="500">
+      {/* <BlockStack gap="500">
         <Layout>
           <Layout.Section>
             <Card>
@@ -273,7 +292,7 @@ export default function Index() {
                         Interface
                       </Text>
                       <span>
-                        {/* <Link
+                        <Link
                           url="https://polaris.shopify.com"
                           target="_blank"
                           removeUnderline
@@ -289,7 +308,7 @@ export default function Index() {
                         >
                           App Bridge
                         </Link>
-                        {", "} */}
+                        {", "}
                         <Link url="/app/products">Products</Link>
                       </span>
                     </InlineStack>
@@ -338,29 +357,11 @@ export default function Index() {
                     </List.Item>
                   </List>
                 </BlockStack>
-                <Pagination
-                  onPrevious={() => {
-                    console.log("Previous");
-
-                    navigate("/app/products/1");
-                  }}
-                  onNext={() => {
-                    console.log("Next1");
-                    navigate("/app/products/2");
-                    console.log("Next2");
-                  }}
-                  nextURL="/app/products/2"
-                  previousURL="/app/products/1"
-                  type="table"
-                  hasNext
-                  hasPrevious
-                  label="1-50 of 8,450 orders"
-                />
               </Card>
             </BlockStack>
           </Layout.Section>
         </Layout>
-      </BlockStack>
+      </BlockStack> */}
     </Page>
   );
 }

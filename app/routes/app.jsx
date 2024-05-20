@@ -15,7 +15,7 @@ export const loader = async ({ request }) => {
 
 export default function App() {
   const { apiKey } = useLoaderData();
-
+  const shop = "fitunions-test1";
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <ui-nav-menu>
@@ -27,7 +27,7 @@ export default function App() {
         <Link to="/products">products</Link>
         <Link to="/app/additional">Additional page</Link>
       </ui-nav-menu>
-      <Outlet />
+      <Outlet context={shop} />
     </AppProvider>
   );
 }

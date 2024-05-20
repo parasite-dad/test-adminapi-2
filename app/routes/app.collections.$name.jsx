@@ -67,7 +67,7 @@ async function collectionContent(collectionhandle, graphql) {
   );
   //console.log(response);
   const data = await response.json();
-  console.log(data);
+  //console.log(data);
   const productList1 = data.data.collectionByHandle.products.edges.map(
     (product, idx, arr) => {
       // if (

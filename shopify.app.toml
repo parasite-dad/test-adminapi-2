@@ -3,7 +3,7 @@
 client_id = "3a783acd5035c155c20928a73039ca61"
 name = "test-adminapi-2"
 handle = "test-adminapi-2"
-application_url = "https://jason-corn-med-accomplish.trycloudflare.com"
+application_url = "https://nh-dad-assess-michigan.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_products"
 
 [auth]
 redirect_urls = [
-  "https://jason-corn-med-accomplish.trycloudflare.com/auth/callback",
-  "https://jason-corn-med-accomplish.trycloudflare.com/auth/shopify/callback",
-  "https://jason-corn-med-accomplish.trycloudflare.com/api/auth/callback"
+  "https://nh-dad-assess-michigan.trycloudflare.com/auth/callback",
+  "https://nh-dad-assess-michigan.trycloudflare.com/auth/shopify/callback",
+  "https://nh-dad-assess-michigan.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
